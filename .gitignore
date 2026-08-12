@@ -7,5 +7,5 @@ main
 estoque.txt
 dados.txt
 
-# Configurações locais do VS Code (opcional — veja nota abaixo)
+# Configurações locais do VS Code
 .vscode/
