@@ -1,0 +1,11 @@
+# Executável compilado
+main
+*.o
+*.out
+
+# Arquivo de dados do sistema (se for gerado em runtime)
+estoque.txt
+dados.txt
+
+# Configurações locais do VS Code (opcional — veja nota abaixo)
+.vscode/
