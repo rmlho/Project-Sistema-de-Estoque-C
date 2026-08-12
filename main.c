@@ -1,21 +1,60 @@
 //gcc main.c -o main && ./main
 
 #include <stdio.h>
+#include <stdlib.h>
+
 #define MAX_PRODUTOS 200
+#define MAX_CATEGORIAS 6
 
 struct Produto {
     int codigo;
     char nome[100];
-    char categoria[100];
+    int categoria;
     int quantDisponivel;
     int quantMinima;
     float valorUnitario;
-    char situacao[20];
+    int situacao;
 };
 
 void exibirMenu(void);
 void exibirMenuRelatorios(void);
 void menuRelatorios(void);
+void cadastrarProduto();
+void consultarPorCodigo();
+void consultarPorNome();
+void consultarPorCategoria();
+void listarTodos();
+void alterarProduto();
+void excluirProduto();
+void registrarEntrada();
+void registrarSaida();
+void listarAbaixoDoMinimo();
+void listarSemEstoque();
+void listarIndisponiveis();
+void salvarDados();
+void carregarDados();
+void relatorioGeral();
+void relatorioAbaixoDoMinimo();
+void relatorioSemEstoque();
+void relatorioPorNome();
+void relatorioPorQuantidade();
+void relatorioPorValor();
+void relatorioValorPorProduto();
+void relatorioValorTotalEstoque();
+void relatorioMaiorValorUnitario();
+void relatorioMaiorValorArmazenado();
+void relatorioPorCategoria();
+int validarNome(char nome[]);
+int validarValorUnitario(float valorUnitario);
+int validarCategoria(int categoria);
+int validarQuantidadeMinima(int quantMinima);
+int validarQuantidadeInicial(int quantDisponivel);
+int validarExclusao(int quantDisponivel);
+int validarLimiteProdutos(int total);
+int validarQuantidadeOperacao(int quantDisponivel);
+int validarEstoqueSuficiente(int quantDisponivel, int quantSaida);
+
+
 
 int main(void) {
     struct Produto estoque[MAX_PRODUTOS];
@@ -140,3 +179,137 @@ void exibirMenuRelatorios(void) {
     printf("[11] Relatório por categoria\n");
     printf("\n");
 }
+
+void menuRelatorios(void) {
+    int opcao = 1;
+
+    while (opcao != 0) {
+        exibirMenuRelatorios();
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 0:
+                break;
+
+            case 1:
+                relatorioGeral();
+                break;
+                
+            case 2:
+                relatorioAbaixoDoMinimo();
+                break;
+
+            case 3:
+                relatorioSemEstoque();
+                break;
+
+            case 4:
+                relatorioPorNome();
+                break;
+
+            case 5:
+                relatorioPorQuantidade();
+                break;
+
+            case 6:
+                relatorioPorValor();
+                break;
+
+            case 7:
+                relatorioValorPorProduto();
+                break;
+
+            case 8:
+                relatorioValorTotalEstoque();
+                break;
+
+            case 9:
+                relatorioMaiorValorUnitario();
+                break;
+
+            case 10:
+                relatorioMaiorValorArmazenado();
+                break;
+
+            case 11:
+                relatorioPorCategoria();
+                break;
+
+            default:
+                printf("Opção inválida");
+                break;
+        }
+    }    
+}
+
+int validarNome(char nome[]) {
+    if (nome[0] == '\0') {
+        return 0;
+    } 
+
+    return 1;
+}
+
+int validarValorUnitario(float valorUnitario) {
+    if (valorUnitario > 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int validarCategoria(int categoria) {
+    if (categoria > 0 && categoria <= MAX_CATEGORIAS) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int validarQuantidadeMinima(int quantMinima) {
+    if (quantMinima < 0) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int validarQuantidadeInicial(int quantDisponivel) {
+    if (quantDisponivel < 0) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int validarExclusao(int quantDisponivel) {
+    if (quantDisponivel == 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int validarLimiteProdutos(int total) {
+    if (total >= MAX_PRODUTOS) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int validarQuantidadeOperacao(int quantDisponivel) {
+    if (quantDisponivel > 0) {
+        return 1;
+    }
+    return 0;
+}
+
+int validarEstoqueSuficiente(int quantDisponivel, int quantSaida) {
+    if (quantSaida > quantDisponivel) {
+        return 0;
+    }
+
+    return 1;
+}
+
