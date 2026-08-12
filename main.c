@@ -16,23 +16,38 @@ struct Produto {
     int situacao;
 };
 
+//Cabeçalho das funções do sistema {
+
+//Funções de menu do sistema:
 void exibirMenu(void);
 void exibirMenuRelatorios(void);
 void menuRelatorios(void);
+
+//Funções de cadastro, alteração e exclusão:
 void cadastrarProduto();
+void alterarProduto();
+void excluirProduto();
+void codigoExiste();
+void buscarIndicePorCodigo();
+
+//Funções de entrada/saída:
+void registrarEntrada();
+void registrarSaida();
+
+//Funções de consulta do sistema:
 void consultarPorCodigo();
 void consultarPorNome();
 void consultarPorCategoria();
 void listarTodos();
-void alterarProduto();
-void excluirProduto();
-void registrarEntrada();
-void registrarSaida();
 void listarAbaixoDoMinimo();
 void listarSemEstoque();
 void listarIndisponiveis();
+
+//Funções de pesistência de dados:
 void salvarDados();
 void carregarDados();
+
+//Funções de relatórios do sistema:
 void relatorioGeral();
 void relatorioAbaixoDoMinimo();
 void relatorioSemEstoque();
@@ -44,6 +59,8 @@ void relatorioValorTotalEstoque();
 void relatorioMaiorValorUnitario();
 void relatorioMaiorValorArmazenado();
 void relatorioPorCategoria();
+
+//Funções de validação do sistema:
 int validarNome(char nome[]);
 int validarValorUnitario(float valorUnitario);
 int validarCategoria(int categoria);
@@ -54,7 +71,7 @@ int validarLimiteProdutos(int total);
 int validarQuantidadeOperacao(int quantDisponivel);
 int validarEstoqueSuficiente(int quantDisponivel, int quantSaida);
 
-
+// }
 
 int main(void) {
     struct Produto estoque[MAX_PRODUTOS];
