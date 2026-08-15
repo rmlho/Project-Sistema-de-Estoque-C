@@ -18,7 +18,7 @@ struct Produto {
     int situacao;
 };
 
-/* NOTA: codigo usa 4 digitos inteiro
+/* NOTA: codigo usa 4 digitos inteiros
 categoria de 1 a 6  
  1. Materia de escritório
  2. Material de limpeza
@@ -82,6 +82,7 @@ void relatorioPorCategoria();
 //Funções de validação do sistema:
 int validarNome(char nome[]);
 int validarCodigo(int codigo);
+int validarProdutoAtivo(int situacao);
 int validarValorUnitario(float valorUnitario);
 int validarCategoria(int categoria);
 int validarQuantidadeMinima(int quantMinima);
@@ -98,7 +99,7 @@ int main(void) {
     int total = 0;
     int opcao = 0;
 
-    //carregarDados();
+    carregarDados();
 
     while (opcao != 16) {
         exibirMenu();
@@ -297,6 +298,14 @@ int validarCodigo(int codigo) {
 
 int validarValorUnitario(float valorUnitario) {
     if (valorUnitario > 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int validarProdutoAtivo(int situacao) {
+    if (situacao == 1) {
         return 1;
     }
 
