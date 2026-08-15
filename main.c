@@ -59,7 +59,7 @@ void consultarPorCategoria();
 void consultarPorSituacao();
 void listarTodos(struct Produto estoque[], int total);
 void listarAbaixoDoMinimo(struct Produto estoque[], int total);
-void listarSemEstoque();
+void listarSemEstoque(struct Produto estoque[], int total);
 void listarIndisponiveis();
 
 //Funções de pesistência de dados:
@@ -146,7 +146,7 @@ int main(void) {
                 break;
 
             case 11:
-                listarSemEstoque();
+                listarSemEstoque(estoque, total);
                 break;
 
             case 12:
@@ -643,5 +643,28 @@ void listarAbaixoDoMinimo(struct Produto estoque[], int total) {
      if (count == 0) {
         printf("Nenhum produto abaixo do mínimo");
     }    
+}
+
+void listarSemEstoque(struct Produto estoque[], int total) {
+    int i;
+    int count = 0;
+
+    for (i = 0; i < total; i++) {
+        if (estoque[i].quantDisponivel == 0) {
+            printf("Código - %d\n", estoque[i].codigo);
+            printf("Nome - %s\n", estoque[i].nome);
+            printf("Categoria - %d\n", estoque[i].categoria);
+            printf("Quantidade - %d\n", estoque[i].quantDisponivel);
+            printf("Quantidade mínima - %d\n", estoque[i].quantMinima);
+            printf("Valor unitario - %.2f\n", estoque[i].valorUnitario);
+            printf("Situação - %d\n", estoque[i].situacao);
+            puts("----------------------------------------\n");
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        printf("Nenhum produto sem estoque");
+    }
 }
 
