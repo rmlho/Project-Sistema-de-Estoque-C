@@ -49,7 +49,7 @@ void codigoExiste(struct Produto estoque[], int total);
 int buscarIndicePorCodigo(struct Produto estoque[], int total, int codigo);
 
 //Funções de entrada/saída:
-void registrarEntrada();
+void registrarEntrada(struct Produto estoque[], int total);
 void registrarSaida();
 
 //Funções de consulta do sistema:
@@ -135,7 +135,7 @@ int main(void) {
                 break;
 
             case 8:
-                registrarEntrada();
+                registrarEntrada(estoque, total);
                 break;
 
             case 9:
@@ -698,5 +698,45 @@ void listarIndisponiveis(struct Produto estoque[], int total) {
     if (count == 0) {
         printf("Nenhum produto indisponivel\n");
     }
+}
+
+void registrarEntrada(struct Produto estoque[], int total) {
+    int aux = 0;
+    int quantRecebida;
+    int indice;
+    int codigo;
+
+    printf("=-=-=-=-=-=- REGISTRANDO ENTRADA =-=-=-=-=-=-\n");
+    printf("Informe o código do produto: \n");
+    scanf("%d", &codigo);
+
+    indice = buscarIndicePorCodigo(estoque ,total ,codigo);
+
+    if (indice == -1) {
+        printf("Produto não existe no estoque!\n");
+        return;
+    }
+
+    if (!validarProdutoAtivo(estoque[indice].situacao)) {
+        printf("Esse produto não está ativo!\n");
+        return;
+    }
+
+    printf("Informe a quantidade recebida do produto: \n");
+    scanf("%d", &quantRecebida);
+
+    if (!validarQuantidadeOperacao(quantRecebida)) {
+        printf("A quantidade DEVE ser maior que zero!\n");
+        return;
+    }
+
+    aux = estoque[indice].quantDisponivel;
+    estoque[indice].quantDisponivel += quantRecebida;
+
+    printf("-------------------------------------------\n");
+    printf("%s\n", estoque[indice].nome);
+    printf("Quantidade anterior: %d\n", aux);
+    printf("Quantidade recebida: %d\n", quantRecebida);
+    printf("Nova quantidade disponivel: %d\n", estoque[indice].quantDisponivel);
 }
 
