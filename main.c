@@ -60,7 +60,7 @@ void consultarPorSituacao();
 void listarTodos(struct Produto estoque[], int total);
 void listarAbaixoDoMinimo(struct Produto estoque[], int total);
 void listarSemEstoque(struct Produto estoque[], int total);
-void listarIndisponiveis();
+void listarIndisponiveis(struct Produto estoque[], int total);
 
 //Funções de pesistência de dados:
 void salvarDados();
@@ -150,7 +150,7 @@ int main(void) {
                 break;
 
             case 12:
-                listarIndisponiveis();
+                listarIndisponiveis(estoque, total);
                 break;
 
             case 13:
@@ -618,7 +618,7 @@ void listarTodos(struct Produto estoque[], int total) {
     }
 
     if (count == 0) {
-        printf("Nenhum produto foi cadastrado");
+        printf("Nenhum produto foi cadastrado\n");
     }
 }
 
@@ -641,7 +641,7 @@ void listarAbaixoDoMinimo(struct Produto estoque[], int total) {
     }
 
      if (count == 0) {
-        printf("Nenhum produto abaixo do mínimo");
+        printf("Nenhum produto abaixo do mínimo\n");
     }    
 }
 
@@ -664,7 +664,30 @@ void listarSemEstoque(struct Produto estoque[], int total) {
     }
 
     if (count == 0) {
-        printf("Nenhum produto sem estoque");
+        printf("Nenhum produto sem estoque\n");
+    }
+}
+
+void listarIndisponiveis(struct Produto estoque[], int total) {
+    int i;
+    int count = 0;
+
+    for (i = 0; i < total; i++) {
+        if (estoque[i].situacao == 2) {
+            printf("Código - %d\n", estoque[i].codigo);
+            printf("Nome - %s\n", estoque[i].nome);
+            printf("Categoria - %d\n", estoque[i].categoria);
+            printf("Quantidade - %d\n", estoque[i].quantDisponivel);
+            printf("Quantidade mínima - %d\n", estoque[i].quantMinima);
+            printf("Valor unitario - %.2f\n", estoque[i].valorUnitario);
+            printf("Situação - %d\n", estoque[i].situacao);
+            puts("----------------------------------------\n");
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        printf("Nenhum produto indisponivel\n");
     }
 }
 
