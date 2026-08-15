@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_PRODUTOS 200
 #define MAX_CATEGORIAS 6
@@ -24,11 +25,11 @@ void exibirMenuRelatorios(void);
 void menuRelatorios(void);
 
 //Funções de cadastro, alteração e exclusão:
-void cadastrarProduto();
-void alterarProduto();
-void excluirProduto();
-void codigoExiste();
-void buscarIndicePorCodigo();
+void cadastrarProduto(struct Produto estoque[], int *total);
+void alterarProduto(struct Produto estoque[], int total);
+void excluirProduto(struct Produto estoque[], int *total);
+void codigoExiste(struct Produto estoque[], int total);
+int buscarIndicePorCodigo(struct Produto estoque[], int total, int codigo);
 
 //Funções de entrada/saída:
 void registrarEntrada();
@@ -86,11 +87,11 @@ int main(void) {
 
         switch (opcao) {
             case 1: 
-                cadastrarProduto();
+                cadastrarProduto(estoque, &total);
                 break;
 
             case 2:
-                consultarPorCodigo();
+                consultarPorCodigo(estoque, total);
                 break;
 
             case 3:
@@ -106,11 +107,11 @@ int main(void) {
                 break;
 
             case 6:
-                alterarProduto();
+                alterarProduto(estoque, total);
                 break;
 
             case 7:
-                excluirProduto();
+                excluirProduto(estoque, &total);
                 break;
 
             case 8:
@@ -328,5 +329,241 @@ int validarEstoqueSuficiente(int quantDisponivel, int quantSaida) {
     }
 
     return 1;
+}
+
+void cadastrarProduto(struct Produto estoque[], int *total) {
+
+    if (!validarLimiteProdutos(*total)) {
+        printf("Erro: limite de %d produtos atingido!\n", MAX_PRODUTOS);
+        return;
+    }
+
+    int codigo;
+    char nome[100];
+    int categoria;
+    int quantDisponivel;
+    int quantMinima;
+    float valorUnitario;
+
+    printf("--- CADASTRO DE PRODUTO ---\n");
+
+    printf("Codigo: ");
+    scanf("%d", &codigo);
+
+    if (buscarIndicePorCodigo(estoque, *total, codigo) != -1) {
+        printf("Erro: codigo ja cadastrado!\n");
+        return;
+    }
+
+    printf("Nome: ");
+    scanf(" %99[^\n]", nome);
+
+    if (!validarNome(nome)) {
+        printf("Erro: nome nao pode ser vazio!\n");
+        return;
+    }
+
+    printf("Categoria (codigo numerico): ");
+    scanf("%d", &categoria);
+
+    if (!validarCategoria(categoria)) {
+        printf("Erro: categoria invalida!\n");
+        return;
+    }
+
+    printf("Quantidade inicial: ");
+    scanf("%d", &quantDisponivel);
+
+    if (!validarQuantidadeInicial(quantDisponivel)) {
+        printf("Erro: quantidade inicial nao pode ser negativa!\n");
+        return;
+    }
+
+    printf("Quantidade minima: ");
+    scanf("%d", &quantMinima);
+
+    if (!validarQuantidadeMinima(quantMinima)) {
+        printf("Erro: quantidade minima nao pode ser negativa!\n");
+        return;
+    }
+
+    printf("Valor unitario: ");
+    scanf("%f", &valorUnitario);
+
+    if (!validarValorUnitario(valorUnitario)) {
+        printf("Erro: valor unitario deve ser maior que zero!\n");
+        return;
+    }
+
+    estoque[*total].codigo = codigo;
+    strcpy(estoque[*total].nome, nome);
+    estoque[*total].categoria = categoria;
+    estoque[*total].quantDisponivel = quantDisponivel;
+    estoque[*total].quantMinima = quantMinima;
+    estoque[*total].valorUnitario = valorUnitario;
+    estoque[*total].situacao = 1; // 1 = ativo
+
+    (*total)++;
+
+    printf("\nProduto cadastrado com sucesso!\n\n");
+}
+
+int buscarIndicePorCodigo(struct Produto estoque[], int total, int codigo) {
+    for (int i = 0; i < total; i++) {
+        if (estoque[i].codigo == codigo) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void consultarPorCodigo(struct Produto estoque[], int total) {
+    int codigo;
+    printf("Digite o codigo do produto que deseja buscar:\n");
+    scanf("%d", &codigo);
+
+    int indice = buscarIndicePorCodigo(estoque, total, codigo);
+
+    if (indice != -1) {
+        printf("\n--- Produto Encontrado ---\n");
+        printf("Codigo: %d\n", estoque[indice].codigo);
+        printf("Nome: %s\n", estoque[indice].nome);
+        printf("Categoria (Cod): %d\n", estoque[indice].categoria);
+        printf("Qtd Disponivel: %d\n", estoque[indice].quantDisponivel);
+        printf("Qtd Minima: %d\n", estoque[indice].quantMinima);
+        printf("Valor Unitario: R$ %.2f\n", estoque[indice].valorUnitario);
+
+        if (estoque[indice].situacao == 1) {
+            printf("Situacao: Ativo\n");
+        } else if (estoque[indice].situacao == 2) {
+            printf("Situacao: Temporariamente Indisponivel\n");
+        } else {
+            printf("Situacao: Descontinuado\n");
+        }
+        printf("--------------------------\n\n");
+    } else {
+        printf("\nNenhum produto cadastrado com o codigo %d.\n\n", codigo);
+    }
+}
+
+void alterarProduto(struct Produto estoque[], int total) {
+    int codigo;
+
+    printf("Digite o codigo do produto que deseja alterar:\n");
+    scanf("%d", &codigo);
+
+    int indice = buscarIndicePorCodigo(estoque, total, codigo);
+
+    if (indice != -1) {
+        printf("\n--- Dados Atuais do Produto ---\n");
+        printf("Codigo: %d\n", estoque[indice].codigo);
+        printf("Nome: %s\n", estoque[indice].nome);
+        printf("Categoria (Cod): %d\n", estoque[indice].categoria);
+        printf("Qtd Disponivel: %d\n", estoque[indice].quantDisponivel);
+        printf("Qtd Minima: %d\n", estoque[indice].quantMinima);
+        printf("Valor Unitario: R$ %.2f\n", estoque[indice].valorUnitario);
+        printf("Situacao: %d\n", estoque[indice].situacao);
+        printf("-------------------------------\n\n");
+
+        char confirmacao;
+        printf("Deseja realmente alterar os dados deste produto? (s/n): ");
+        scanf(" %c", &confirmacao);
+
+        if (confirmacao == 's' || confirmacao == 'S') {
+
+            char novoNome[100];
+            printf("\nDigite o novo nome do produto: ");
+            scanf(" %99[^\n]", novoNome);
+            if (!validarNome(novoNome)) {
+                printf("Erro: nome nao pode ser vazio! Alteracao cancelada.\n");
+                return;
+            }
+
+            int novaCategoria;
+            printf("Informe a nova categoria (Codigo numerico): ");
+            scanf("%d", &novaCategoria);
+            if (!validarCategoria(novaCategoria)) {
+                printf("Erro: categoria invalida! Alteracao cancelada.\n");
+                return;
+            }
+
+            int novaQuantMinima;
+            printf("Informe a nova quantidade minima recomendada: ");
+            scanf("%d", &novaQuantMinima);
+            if (!validarQuantidadeMinima(novaQuantMinima)) {
+                printf("Erro: quantidade minima nao pode ser negativa! Alteracao cancelada.\n");
+                return;
+            }
+
+            float novoValor;
+            printf("Informe o novo valor unitario: R$ ");
+            scanf("%f", &novoValor);
+            if (!validarValorUnitario(novoValor)) {
+                printf("Erro: valor unitario deve ser maior que zero! Alteracao cancelada.\n");
+                return;
+            }
+
+            int novaSituacao;
+            printf("Informe a nova situacao (1-Ativo, 2-Indisponivel, 3-Descontinuado): ");
+            scanf("%d", &novaSituacao);
+            if (novaSituacao < 1 || novaSituacao > 3) {
+                printf("Erro: situacao invalida! Alteracao cancelada.\n");
+                return;
+            }
+
+            strcpy(estoque[indice].nome, novoNome);
+            estoque[indice].categoria = novaCategoria;
+            estoque[indice].quantMinima = novaQuantMinima;
+            estoque[indice].valorUnitario = novoValor;
+            estoque[indice].situacao = novaSituacao;
+
+            printf("\nProduto alterado com sucesso!\n");
+        } else {
+            printf("\nAlteracao cancelada.\n");
+        }
+    } else {
+        printf("\nNenhum produto encontrado com o codigo %d.\n", codigo);
+    }
+}
+
+void excluirProduto(struct Produto estoque[], int *total) {
+    int codigo;
+
+    printf("Digite o codigo do produto que deseja excluir:\n");
+    scanf("%d", &codigo);
+
+    int indice = buscarIndicePorCodigo(estoque, *total, codigo);
+
+    if (indice != -1) {
+        printf("\n--- Dados do Produto ---\n");
+        printf("Codigo: %d\n", estoque[indice].codigo);
+        printf("Nome: %s\n", estoque[indice].nome);
+        printf("Qtd Disponivel: %d\n", estoque[indice].quantDisponivel);
+        printf("------------------------\n\n");
+
+        if (!validarExclusao(estoque[indice].quantDisponivel)) {
+            printf("Erro: A exclusao nao pode ser realizada. Ainda existem %d unidades em estoque.\n", estoque[indice].quantDisponivel);
+        } else {
+            char confirmacao;
+
+            printf("O produto possui 0 unidades em estoque. Deseja realmente exclui-lo definitivamente? (s/n): ");
+            scanf(" %c", &confirmacao);
+
+            if (confirmacao == 's' || confirmacao == 'S') {
+
+                for (int i = indice; i < (*total) - 1; i++) {
+                    estoque[i] = estoque[i + 1];
+                }
+
+                (*total)--;
+
+                printf("\nProduto excluido definitivamente com sucesso!\n");
+            } else {
+                printf("\nExclusao cancelada.\n");
+            }
+        }
+    } else {
+        printf("\nNenhum produto encontrado com o codigo %d.\n", codigo);
+    }
 }
 
