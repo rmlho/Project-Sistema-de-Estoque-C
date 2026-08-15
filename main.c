@@ -6,6 +6,7 @@
 
 #define MAX_PRODUTOS 200
 #define MAX_CATEGORIAS 6
+#define MAX_CODIGO 999
 
 struct Produto {
     int codigo;
@@ -16,6 +17,22 @@ struct Produto {
     float valorUnitario;
     int situacao;
 };
+
+/* NOTA: codigo usa 4 digitos inteiro
+categoria de 1 a 6  
+ 1. Materia de escritório
+ 2. Material de limpeza
+ 3. Equipamentos
+ 4. Componentes eletrônicos
+ 5. Ferramentas
+ 6. Acessórios
+
+e a situacao tambem em inteiros 
+
+ 1. ATIVO
+ 2. INDISPONIVEL
+ 3. DESCONTINUADO
+*/
 
 //Cabeçalho das funções do sistema {
 
@@ -39,7 +56,8 @@ void registrarSaida();
 void consultarPorCodigo();
 void consultarPorNome();
 void consultarPorCategoria();
-void listarTodos();
+void consultarPorSituacao();
+void listarTodos(struct Produto estoque[], int total);
 void listarAbaixoDoMinimo();
 void listarSemEstoque();
 void listarIndisponiveis();
@@ -63,6 +81,7 @@ void relatorioPorCategoria();
 
 //Funções de validação do sistema:
 int validarNome(char nome[]);
+int validarCodigo(int codigo);
 int validarValorUnitario(float valorUnitario);
 int validarCategoria(int categoria);
 int validarQuantidadeMinima(int quantMinima);
@@ -103,7 +122,7 @@ int main(void) {
                 break;
 
             case 5:
-                listarTodos();
+                listarTodos(estoque, total);
                 break;
 
             case 6:
@@ -268,6 +287,14 @@ int validarNome(char nome[]) {
     return 1;
 }
 
+int validarCodigo(int codigo) {
+    if (codigo < 1000 && codigo > MAX_CODIGO) {
+        return 0;
+    }
+
+    return 1;
+}
+
 int validarValorUnitario(float valorUnitario) {
     if (valorUnitario > 0) {
         return 1;
@@ -344,11 +371,18 @@ void cadastrarProduto(struct Produto estoque[], int *total) {
     int quantDisponivel;
     int quantMinima;
     float valorUnitario;
-
+    
     printf("--- CADASTRO DE PRODUTO ---\n");
+    printf("Categorias: 1. Material de escritorio; 2. Material de limpeza; 3. Equipamentos; 4. Componentes eletrônicos; 5. Ferramentas; 6. Acessórios\n");
+    printf("\n");
 
-    printf("Codigo: ");
+    printf("Codigo de 4 digitos: ");
     scanf("%d", &codigo);
+
+    if (!validarCodigo(codigo)) {
+        printf("Erro: coódigo deve ter 4 digitos!\n");
+        return;
+    } 
 
     if (buscarIndicePorCodigo(estoque, *total, codigo) != -1) {
         printf("Erro: codigo ja cadastrado!\n");
@@ -564,6 +598,27 @@ void excluirProduto(struct Produto estoque[], int *total) {
         }
     } else {
         printf("\nNenhum produto encontrado com o codigo %d.\n", codigo);
+    }
+}
+
+void listarTodos(struct Produto estoque[], int total) {
+    int count = 0;
+    int i;
+
+    for (i = 0; i < total; i++) {
+        printf("Código - %d\n", estoque[i].codigo);
+        printf("Nome - %s\n", estoque[i].nome);
+        printf("Categoria - %d\n", estoque[i].categoria);
+        printf("Quantidade - %d\n", estoque[i].quantDisponivel);
+        printf("Quantidade mínima - %d\n", estoque[i].quantMinima);
+        printf("Valor unitario - %.2f\n", estoque[i].valorUnitario);
+        printf("Situação - %d\n", estoque[i].situacao);
+        puts("----------------------------------------\n");
+        count++;
+    }
+
+    if (count == 0) {
+        printf("Nenhum produto foi cadastrado");
     }
 }
 
