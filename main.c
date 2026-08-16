@@ -63,8 +63,8 @@ void listarSemEstoque(struct Produto estoque[], int total);
 void listarIndisponiveis(struct Produto estoque[], int total);
 
 //Funções de ordenação do sistema:
-void ordenarPorNome();
-void ordenarPorQuantidade();
+void ordenarPorNome(struct Produto estoque[], int total);
+void ordenarPorQuantidade(struct Produto estoque[], int total);
 void ordenarPorValor();
 
 //Funções de pesistência de dados:
@@ -788,5 +788,109 @@ void registrarSaida(struct Produto estoque[], int total) {
     printf("Quantidade anterior: %d\n", aux);
     printf("Quantidade retirada: %d\n", quantSaida);
     printf("Nova quantidade disponivel: %d\n", estoque[indice].quantDisponivel);
+}
+
+void ordenarPorNome(struct Produto estoque[], int total) {
+    struct Produto copia[MAX_PRODUTOS];
+
+    for (int i = 0; i < total; i++) {
+        copia[i] = estoque[i];
+    }
+
+    for (int i = 0; i < total - 1; i++) {
+        for (int j = 0; j < total - i - 1; j++) {
+            if (strcmp(copia[j].nome, copia[j + 1].nome) > 0) {
+                struct Produto temp = copia[j];
+                copia[j] = copia[j + 1];
+                copia[j + 1] = temp;
+            }
+        }
+    }
+
+    for (int i = 0; i < total; i++) {
+        printf("%s\n", copia[i].nome);
+    }
+}
+
+void ordenarPorQuantidade(struct Produto estoque[], int total) {
+    struct Produto copia[MAX_PRODUTOS];
+    char ordem;
+
+    for (int i = 0; i < total; i++) {
+        copia[i] = estoque[i];
+    }
+
+    printf("Informe '+' para crescente ou '-' para decrescente: \n");
+    scanf(" %c", &ordem);
+
+    if (ordem == '+') {
+        for (int i = 0; i < total - 1; i++) {
+            for (int j = 0; j < total - i - 1; j++) {
+                if (copia[j].quantDisponivel > copia[j + 1].quantDisponivel) {
+                    struct Produto temp = copia[j];
+                    copia[j] = copia[j + 1];
+                    copia[j + 1] = temp;
+                }
+            }
+        }
+    } else if (ordem == '-') {
+        for (int i = 0; i < total - 1; i++) {
+            for (int j = 0; j < total - i - 1; j++) {
+                if (copia[j].quantDisponivel < copia[j + 1].quantDisponivel) {
+                    struct Produto temp = copia[j];
+                    copia[j] = copia[j + 1];
+                    copia[j + 1] = temp;
+                }
+            }
+        }
+    } else {
+        printf("Resposta invalida!\n");
+        return;
+    }
+
+    for (int i = 0; i < total; i++) {
+        printf("%d\n", copia[i].quantDisponivel);
+    }
+}
+
+void ordenarPorValor(struct Produto estoque[], int total) {
+    struct Produto copia[MAX_PRODUTOS];
+    char ordem;
+
+    for (int i = 0; i < total; i++) {
+        copia[i] = estoque[i];
+    }
+
+    printf("Informe '+' para crescente ou '-' para decrescente: \n");
+    scanf(" %c", &ordem);
+
+    if (ordem == '+') {
+        for (int i = 0; i < total - 1; i++) {
+            for (int j = 0; j < total - i - 1; j++) {
+                if (copia[j].valorUnitario > copia[j + 1].valorUnitario) {
+                    struct Produto temp = copia[j];
+                    copia[j] = copia[j + 1];
+                    copia[j + 1] = temp;
+                }
+            }
+        }
+    } else if (ordem == '-') {
+        for (int i = 0; i < total - 1; i++) {
+            for (int j = 0; j < total - i - 1; j++) {
+                if (copia[j].valorUnitario < copia[j + 1].valorUnitario) {
+                    struct Produto temp = copia[j];
+                    copia[j] = copia[j + 1];
+                    copia[j + 1] = temp;
+                }
+            }
+        }
+    } else {
+        printf("Resposta invalida!\n");
+        return;
+    }
+
+    for (int i = 0; i < total; i++) {
+        printf("%.2f\n", copia[i].valorUnitario);
+    }
 }
 
