@@ -62,6 +62,11 @@ void listarAbaixoDoMinimo(struct Produto estoque[], int total);
 void listarSemEstoque(struct Produto estoque[], int total);
 void listarIndisponiveis(struct Produto estoque[], int total);
 
+//Funções de ordenação do sistema:
+void ordenarPorNome();
+void ordenarPorQuantidade();
+void ordenarPorValor();
+
 //Funções de pesistência de dados:
 void salvarDados();
 void carregarDados();
