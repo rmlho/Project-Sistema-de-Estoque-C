@@ -53,10 +53,9 @@ void registrarEntrada(struct Produto estoque[], int total);
 void registrarSaida(struct Produto estoque[], int total);
 
 //Funções de consulta do sistema:
-void consultarPorCodigo();
-void consultarPorNome();
-void consultarPorCategoria();
-void consultarPorSituacao();
+void consultarPorNome(void);
+void consultarPorCategoria(void);
+void consultarPorSituacao(void);
 void listarTodos(struct Produto estoque[], int total);
 void listarAbaixoDoMinimo(struct Produto estoque[], int total);
 void listarSemEstoque(struct Produto estoque[], int total);
@@ -65,24 +64,24 @@ void listarIndisponiveis(struct Produto estoque[], int total);
 //Funções de ordenação do sistema:
 void ordenarPorNome(struct Produto estoque[], int total);
 void ordenarPorQuantidade(struct Produto estoque[], int total);
-void ordenarPorValor();
+void ordenarPorValor(struct Produto estoque[], int total);
 
 //Funções de pesistência de dados:
-void salvarDados();
-void carregarDados();
+void salvarDados(void);
+void carregarDados(void);
 
 //Funções de relatórios do sistema:
-void relatorioGeral();
-void relatorioAbaixoDoMinimo();
-void relatorioSemEstoque();
-void relatorioPorNome();
-void relatorioPorQuantidade();
-void relatorioPorValor();
-void relatorioValorPorProduto();
-void relatorioValorTotalEstoque();
-void relatorioMaiorValorUnitario();
-void relatorioMaiorValorArmazenado();
-void relatorioPorCategoria();
+void relatorioGeral(void);
+void relatorioAbaixoDoMinimo(void);
+void relatorioSemEstoque(void);
+void relatorioPorNome(void);
+void relatorioPorQuantidade(void);
+void relatorioPorValor(void);
+void relatorioValorPorProduto(void);
+void relatorioValorTotalEstoque(void);
+void relatorioMaiorValorUnitario(void);
+void relatorioMaiorValorArmazenado(void);
+void relatorioPorCategoria(void);
 
 //Funções de validação do sistema:
 int validarNome(char nome[]);
@@ -116,7 +115,7 @@ int main(void) {
                 break;
 
             case 2:
-                consultarPorCodigo(estoque, total);
+                codigoExiste(estoque, total);
                 break;
 
             case 3:
@@ -186,7 +185,8 @@ int main(void) {
 }
 
 void exibirMenu(void) {
-    printf("-=-=-=-=-=-= Controle de Estoque -=-=-=-=-=-=");
+    printf("\n");
+    printf("------------ Controle de Estoque ------------");
     printf("\n[1] Cadastrar produto");
     printf("\n[2] Consultar produto pelo código");
     printf("\n[3] Consultar produto pelo nome");
@@ -465,7 +465,7 @@ int buscarIndicePorCodigo(struct Produto estoque[], int total, int codigo) {
     return -1;
 }
 
-void consultarPorCodigo(struct Produto estoque[], int total) {
+void codigoExiste(struct Produto estoque[], int total) {
     int codigo;
     printf("Digite o codigo do produto que deseja buscar:\n");
     scanf("%d", &codigo);
@@ -619,6 +619,7 @@ void listarTodos(struct Produto estoque[], int total) {
     int count = 0;
     int i;
 
+    puts("----------------------------------------\n");
     for (i = 0; i < total; i++) {
         printf("Código - %d\n", estoque[i].codigo);
         printf("Nome - %s\n", estoque[i].nome);
@@ -627,6 +628,7 @@ void listarTodos(struct Produto estoque[], int total) {
         printf("Quantidade mínima - %d\n", estoque[i].quantMinima);
         printf("Valor unitario - %.2f\n", estoque[i].valorUnitario);
         printf("Situação - %d\n", estoque[i].situacao);
+        printf("\n");
         puts("----------------------------------------\n");
         count++;
     }
@@ -711,8 +713,9 @@ void registrarEntrada(struct Produto estoque[], int total) {
     int indice;
     int codigo;
 
-    printf("=-=-=-=-=-=- REGISTRANDO ENTRADA =-=-=-=-=-=-\n");
-    printf("Informe o código do produto: \n");
+    printf("\n");
+    printf("------------ REGISTRANDO ENTRADA ------------\n");
+    printf("Informe o código do produto: ");
     scanf("%d", &codigo);
 
     indice = buscarIndicePorCodigo(estoque ,total ,codigo);
@@ -727,7 +730,7 @@ void registrarEntrada(struct Produto estoque[], int total) {
         return;
     }
 
-    printf("Informe a quantidade recebida do produto: \n");
+    printf("Informe a quantidade recebida do produto: ");
     scanf("%d", &quantRecebida);
 
     if (!validarQuantidadeOperacao(quantRecebida)) {
@@ -738,11 +741,14 @@ void registrarEntrada(struct Produto estoque[], int total) {
     aux = estoque[indice].quantDisponivel;
     estoque[indice].quantDisponivel += quantRecebida;
 
+    printf("\n");
     printf("-------------------------------------------\n");
+    printf("\n");
     printf("%s\n", estoque[indice].nome);
     printf("Quantidade anterior: %d\n", aux);
     printf("Quantidade recebida: %d\n", quantRecebida);
     printf("Nova quantidade disponivel: %d\n", estoque[indice].quantDisponivel);
+    printf("\n");
 }
 
 void registrarSaida(struct Produto estoque[], int total) {
@@ -751,8 +757,9 @@ void registrarSaida(struct Produto estoque[], int total) {
     int indice;
     int codigo;
 
-    printf("=-=-=-=-=-=- REGISTRANDO SAIDA =-=-=-=-=-=-\n");
-    printf("Informe o código do produto: \n");
+    printf("\n");
+    printf("------------ REGISTRANDO SAIDA ------------\n");
+    printf("Informe o código do produto: ");
     scanf("%d", &codigo);
 
     indice = buscarIndicePorCodigo(estoque ,total ,codigo);
@@ -767,7 +774,7 @@ void registrarSaida(struct Produto estoque[], int total) {
         return;
     }
 
-    printf("Informe a quantidade de retirada do produto: \n");
+    printf("Informe a quantidade de retirada do produto: ");
     scanf("%d", &quantSaida);
 
     if (!validarQuantidadeOperacao(quantSaida)) {
@@ -783,11 +790,14 @@ void registrarSaida(struct Produto estoque[], int total) {
     aux = estoque[indice].quantDisponivel;
     estoque[indice].quantDisponivel -= quantSaida;
 
+    printf("\n");
     printf("-------------------------------------------\n");
+    printf("\n");
     printf("%s\n", estoque[indice].nome);
     printf("Quantidade anterior: %d\n", aux);
     printf("Quantidade retirada: %d\n", quantSaida);
     printf("Nova quantidade disponivel: %d\n", estoque[indice].quantDisponivel);
+    printf("\n");
 }
 
 void ordenarPorNome(struct Produto estoque[], int total) {
@@ -894,3 +904,62 @@ void ordenarPorValor(struct Produto estoque[], int total) {
     }
 }
 
+void carregarDados(void) {
+    printf("Funcao carregarDados ainda nao implementada.\n");
+}
+
+void salvarDados(void) {
+    printf("Funcao salvarDados ainda nao implementada.\n");
+}
+
+void consultarPorNome(void) {
+    printf("Funcao consultarPorNome ainda nao implementada.\n");
+}
+
+void consultarPorCategoria(void) {
+    printf("Funcao consultarPorCategoria ainda nao implementada.\n");
+}
+
+void relatorioGeral(void) {
+    printf("Funcao relatorioGeral ainda nao implementada.\n");
+}
+
+void relatorioAbaixoDoMinimo(void) {
+    printf("Funcao relatorioAbaixoDoMinimo ainda nao implementada.\n");
+}
+
+void relatorioSemEstoque(void) {
+    printf("Funcao relatorioSemEstoque ainda nao implementada.\n");
+}
+
+void relatorioPorNome(void) {
+    printf("Funcao relatorioPorNome ainda nao implementada.\n");
+}
+
+void relatorioPorQuantidade(void) {
+    printf("Funcao relatorioPorQuantidade ainda nao implementada.\n");
+}
+
+void relatorioPorValor(void) {
+    printf("Funcao relatorioPorValor ainda nao implementada.\n");
+}
+
+void relatorioValorPorProduto(void) {
+    printf("Funcao relatorioValorPorProduto ainda nao implementada.\n");
+}
+
+void relatorioValorTotalEstoque(void) {
+    printf("Funcao relatorioValorTotalEstoque ainda nao implementada.\n");
+}
+
+void relatorioMaiorValorUnitario(void) {
+    printf("Funcao relatorioMaiorValorUnitario ainda nao implementada.\n");
+}
+
+void relatorioMaiorValorArmazenado(void) {
+    printf("Funcao relatorioMaiorValorArmazenado ainda nao implementada.\n");
+}
+
+void relatorioPorCategoria(void) {
+    printf("Funcao relatorioPorCategoria ainda nao implementada.\n");
+}
