@@ -53,13 +53,12 @@ void registrarEntrada(struct Produto estoque[], int total);
 void registrarSaida(struct Produto estoque[], int total);
 
 //Funções de consulta do sistema:
-void consultarPorNome(void);
-void consultarPorCategoria(void);
-void consultarPorSituacao(void);
+void consultarPorNome(struct Produto estoque[], int total);
+void consultarPorCategoria(struct Produto estoque[], int total);
+void consultarPorSituacao(struct Produto estoque[], int total);
 void listarTodos(struct Produto estoque[], int total);
 void listarAbaixoDoMinimo(struct Produto estoque[], int total);
 void listarSemEstoque(struct Produto estoque[], int total);
-void listarIndisponiveis(struct Produto estoque[], int total);
 
 //Funções de ordenação do sistema:
 void ordenarPorNome(struct Produto estoque[], int total);
@@ -119,11 +118,11 @@ int main(void) {
                 break;
 
             case 3:
-                consultarPorNome();
+                consultarPorNome(estoque, total);
                 break;
 
             case 4:
-                consultarPorCategoria();
+                consultarPorCategoria(estoque, total);
                 break;
 
             case 5:
@@ -155,7 +154,7 @@ int main(void) {
                 break;
 
             case 12:
-                listarIndisponiveis(estoque, total);
+                consultarPorSituacao(estoque, total);
                 break;
 
             case 13:
@@ -684,29 +683,6 @@ void listarSemEstoque(struct Produto estoque[], int total) {
     }
 }
 
-void listarIndisponiveis(struct Produto estoque[], int total) {
-    int i;
-    int count = 0;
-
-    for (i = 0; i < total; i++) {
-        if (estoque[i].situacao == 2) {
-            printf("Código - %d\n", estoque[i].codigo);
-            printf("Nome - %s\n", estoque[i].nome);
-            printf("Categoria - %d\n", estoque[i].categoria);
-            printf("Quantidade - %d\n", estoque[i].quantDisponivel);
-            printf("Quantidade mínima - %d\n", estoque[i].quantMinima);
-            printf("Valor unitario - %.2f\n", estoque[i].valorUnitario);
-            printf("Situação - %d\n", estoque[i].situacao);
-            puts("----------------------------------------\n");
-            count++;
-        }
-    }
-
-    if (count == 0) {
-        printf("Nenhum produto indisponivel\n");
-    }
-}
-
 void registrarEntrada(struct Produto estoque[], int total) {
     int aux = 0;
     int quantRecebida;
@@ -912,12 +888,158 @@ void salvarDados(void) {
     printf("Funcao salvarDados ainda nao implementada.\n");
 }
 
-void consultarPorNome(void) {
-    printf("Funcao consultarPorNome ainda nao implementada.\n");
+void consultarPorNome(struct Produto estoque[], int total) {
+    char nome_busca[100];
+    int encontrou = 0;
+
+    printf("Digite o nome (ou parte dele) que deseja buscar (sem espacos):\n");
+    scanf(" %99[^\n]", nome_busca);
+
+    printf("\n--- Resultados da Busca ---\n");
+
+    for (int i = 0; i < total; i++) 
+    {
+        int contem_texto = 0;
+        
+        
+        for (int j = 0; estoque[i].nome[j] != '\0' && contem_texto == 0; j++) 
+        {
+            int k = 0;
+            
+            
+            while (nome_busca[k] != '\0' && estoque[i].nome[j + k] == nome_busca[k]) 
+            {
+                k++;
+            }
+            
+            
+            if (nome_busca[k] == '\0') 
+            {
+                contem_texto = 1; 
+            }
+        }
+
+        
+        if (contem_texto == 1) 
+        {
+            printf("Codigo: %d\n", estoque[i].codigo);
+            printf("Nome: %s\n", estoque[i].nome);
+            printf("Categoria (Cod): %d\n", estoque[i].categoria);
+            printf("Qtd Disponivel: %d\n", estoque[i].quantDisponivel);
+            printf("Qtd Minima: %d\n", estoque[i].quantMinima);
+            printf("Valor Unitario: R$ %.2f\n", estoque[i].valorUnitario);
+            
+            if (estoque[i].situacao == 1) {
+                printf("Situacao: Ativo\n");
+            } else if (estoque[i].situacao == 2) {
+                printf("Situacao: Temporariamente Indisponivel\n");
+            } else {
+                printf("Situacao: Descontinuado\n");
+            }
+            printf("---------------------------\n");
+            
+            encontrou = 1;
+        }
+    }
+
+    if (encontrou == 0) 
+    {
+        printf("Nenhum produto encontrado contendo o texto \"%s\".\n", nome_busca);
+    }
+    printf("\n");
 }
 
-void consultarPorCategoria(void) {
-    printf("Funcao consultarPorCategoria ainda nao implementada.\n");
+void consultarPorCategoria(struct Produto estoque[], int total) {
+    int categoria_busca;
+    int encontrou = 0;
+
+    printf("Digite o codigo numerico da categoria que deseja buscar:\n");
+    scanf("%d", &categoria_busca);
+
+    printf("\n--- Produtos da Categoria %d ---\n", categoria_busca);
+
+    
+    for (int i = 0; i < total; i++) 
+    {
+        
+        if (estoque[i].categoria == categoria_busca) 
+        {
+            printf("Codigo: %d\n", estoque[i].codigo);
+            printf("Nome: %s\n", estoque[i].nome);
+            printf("Categoria (Cod): %d\n", estoque[i].categoria);
+            printf("Qtd Disponivel: %d\n", estoque[i].quantDisponivel);
+            printf("Qtd Minima: %d\n", estoque[i].quantMinima);
+            printf("Valor Unitario: R$ %.2f\n", estoque[i].valorUnitario);
+            
+            
+            if (estoque[i].situacao == 1) {
+                printf("Situacao: Ativo\n");
+            } else if (estoque[i].situacao == 2) {
+                printf("Situacao: Temporariamente Indisponivel\n");
+            } else {
+                printf("Situacao: Descontinuado\n");
+            }
+            printf("-------------------------------\n");
+            
+            
+            encontrou = 1;
+        }
+    }
+
+    
+    if (encontrou == 0) 
+    {
+        printf("Nenhum produto cadastrado na categoria %d.\n", categoria_busca);
+    }
+    printf("\n");
+}
+
+void consultarPorSituacao(struct Produto estoque[], int total) 
+{
+    int situacao_busca;
+    int encontrou = 0;
+
+    printf("Digite o codigo da situacao que deseja buscar:\n");
+    printf("1 - Ativo\n");
+    printf("2 - Temporariamente Indisponivel\n");
+    printf("3 - Descontinuado\n");
+    printf("Opcao: ");
+    scanf("%d", &situacao_busca);
+
+    printf("\n--- Resultados da Busca (Situacao: %d) ---\n", situacao_busca);
+
+    
+    for (int i = 0; i < total; i++) 
+    {
+        
+        if (estoque[i].situacao == situacao_busca) 
+        {
+            printf("Codigo: %d\n", estoque[i].codigo);
+            printf("Nome: %s\n", estoque[i].nome);
+            printf("Categoria (Cod): %d\n", estoque[i].categoria);
+            printf("Qtd Disponivel: %d\n", estoque[i].quantDisponivel);
+            printf("Qtd Minima: %d\n", estoque[i].quantMinima);
+            printf("Valor Unitario: R$ %.2f\n", estoque[i].valorUnitario);
+            
+            
+            if (estoque[i].situacao == 1) {
+                printf("Situacao: Ativo\n");
+            } else if (estoque[i].situacao == 2) {
+                printf("Situacao: Temporariamente Indisponivel\n");
+            } else {
+                printf("Situacao: Descontinuado\n");
+            }
+            printf("-------------------------------\n");
+            
+            encontrou = 1;
+        }
+    }
+
+    if (encontrou == 0) 
+    {
+        printf("Nenhum produto encontrado com a situacao %d.\n", situacao_busca);
+    }
+    printf("\n");
 }
 
 void relatorioGeral(void) {
