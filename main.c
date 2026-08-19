@@ -6,7 +6,7 @@
 
 #define MAX_PRODUTOS 200
 #define MAX_CATEGORIAS 6
-#define MAX_CODIGO 999
+#define MAX_CODIGO 9999
 
 struct Produto {
     int codigo;
@@ -904,6 +904,7 @@ void carregarDados(struct Produto estoque[], int *total) {
     fclose(pArquivo);
     printf("%d produtos carregados com sucesso.\n", *total);
 }
+
 void salvarDados(struct Produto estoque[], int total) {
     FILE *pArquivo = fopen("estoque.txt", "w");
     int i;
