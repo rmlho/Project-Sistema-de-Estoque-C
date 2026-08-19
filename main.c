@@ -39,7 +39,7 @@ e a situacao tambem em inteiros
 //Funções de menu do sistema:
 void exibirMenu(void);
 void exibirMenuRelatorios(void);
-void menuRelatorios(void);
+void menuRelatorios(struct Produto estoque[], int total);
 
 //Funções de cadastro, alteração e exclusão:
 void cadastrarProduto(struct Produto estoque[], int *total);
@@ -70,17 +70,17 @@ void salvarDados(struct Produto estoque[], int total);
 void carregarDados(struct Produto estoque[], int *total);
 
 //Funções de relatórios do sistema:
-void relatorioGeral(void);
-void relatorioAbaixoDoMinimo(void);
-void relatorioSemEstoque(void);
-void relatorioPorNome(void);
-void relatorioPorQuantidade(void);
-void relatorioPorValor(void);
-void relatorioValorPorProduto(void);
-void relatorioValorTotalEstoque(void);
-void relatorioMaiorValorUnitario(void);
-void relatorioMaiorValorArmazenado(void);
-void relatorioPorCategoria(void);
+void relatorioGeral(struct Produto estoque[], int total);
+void relatorioAbaixoDoMinimo(struct Produto estoque[], int total);
+void relatorioSemEstoque(struct Produto estoque[], int total);
+void relatorioPorNome(struct Produto estoque[], int total);
+void relatorioPorQuantidade(struct Produto estoque[], int total);
+void relatorioPorValor(struct Produto estoque[], int total);
+void relatorioValorPorProduto(struct Produto estoque[], int total);
+void relatorioValorTotalEstoque(struct Produto estoque[], int total);
+void relatorioMaiorValorUnitario(struct Produto estoque[], int total);
+void relatorioMaiorValorArmazenado(struct Produto estoque[], int total);
+void relatorioPorCategoria(struct Produto estoque[], int total);
 
 //Funções de validação do sistema:
 int validarNome(char nome[]);
@@ -158,7 +158,7 @@ int main(void) {
                 break;
 
             case 13:
-                menuRelatorios();
+                menuRelatorios(estoque, total);
                 break;
 
             case 14:
@@ -222,7 +222,7 @@ void exibirMenuRelatorios(void) {
     printf("\n");
 }
 
-void menuRelatorios(void) {
+void menuRelatorios(struct Produto estoque[], int total) {
     int opcao = 1;
 
     while (opcao != 0) {
@@ -234,47 +234,47 @@ void menuRelatorios(void) {
                 break;
 
             case 1:
-                relatorioGeral();
+                relatorioGeral(estoque, total);
                 break;
                 
             case 2:
-                relatorioAbaixoDoMinimo();
+                relatorioAbaixoDoMinimo(estoque, total);
                 break;
 
             case 3:
-                relatorioSemEstoque();
+                relatorioSemEstoque(estoque, total);
                 break;
 
             case 4:
-                relatorioPorNome();
+                relatorioPorNome(estoque, total);
                 break;
 
             case 5:
-                relatorioPorQuantidade();
+                relatorioPorQuantidade(estoque, total);
                 break;
 
             case 6:
-                relatorioPorValor();
+                relatorioPorValor(estoque, total);
                 break;
 
             case 7:
-                relatorioValorPorProduto();
+                relatorioValorPorProduto(estoque, total);
                 break;
 
             case 8:
-                relatorioValorTotalEstoque();
+                relatorioValorTotalEstoque(estoque, total);
                 break;
 
             case 9:
-                relatorioMaiorValorUnitario();
+                relatorioMaiorValorUnitario(estoque, total);
                 break;
 
             case 10:
-                relatorioMaiorValorArmazenado();
+                relatorioMaiorValorArmazenado(estoque, total);
                 break;
 
             case 11:
-                relatorioPorCategoria();
+                relatorioPorCategoria(estoque, total);
                 break;
 
             default:
@@ -1082,46 +1082,147 @@ void consultarPorSituacao(struct Produto estoque[], int total)
     printf("\n");
 }
 
-void relatorioGeral(void) {
-    printf("Funcao relatorioGeral ainda nao implementada.\n");
+void relatorioGeral(struct Produto estoque[], int total) {
+    if (total == 0) {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+
+    printf("\n--- RELATORIO GERAL ---\n");
+    for (int i = 0; i < total; i++) {
+        printf("Codigo: %d | Nome: %s | Categoria: %d | Qtd: %d | Minimo: %d | Valor: R$ %.2f | Situacao: %d\n",
+               estoque[i].codigo, estoque[i].nome, estoque[i].categoria,
+               estoque[i].quantDisponivel, estoque[i].quantMinima,
+               estoque[i].valorUnitario, estoque[i].situacao);
+    }
+    printf("-------------------------\n");
 }
 
-void relatorioAbaixoDoMinimo(void) {
-    printf("Funcao relatorioAbaixoDoMinimo ainda nao implementada.\n");
+void relatorioAbaixoDoMinimo(struct Produto estoque[], int total) {
+    listarAbaixoDoMinimo(estoque, total);
 }
 
-void relatorioSemEstoque(void) {
-    printf("Funcao relatorioSemEstoque ainda nao implementada.\n");
+void relatorioSemEstoque(struct Produto estoque[], int total) {
+    listarSemEstoque(estoque, total);
 }
 
-void relatorioPorNome(void) {
-    printf("Funcao relatorioPorNome ainda nao implementada.\n");
+void relatorioPorNome(struct Produto estoque[], int total) {
+    ordenarPorNome(estoque, total);
 }
 
-void relatorioPorQuantidade(void) {
-    printf("Funcao relatorioPorQuantidade ainda nao implementada.\n");
+void relatorioPorQuantidade(struct Produto estoque[], int total) {
+    ordenarPorQuantidade(estoque, total);
 }
 
-void relatorioPorValor(void) {
-    printf("Funcao relatorioPorValor ainda nao implementada.\n");
+void relatorioPorValor(struct Produto estoque[], int total) {
+    ordenarPorValor(estoque, total);
 }
 
-void relatorioValorPorProduto(void) {
-    printf("Funcao relatorioValorPorProduto ainda nao implementada.\n");
+void relatorioValorPorProduto(struct Produto estoque[], int total) {
+    if (total == 0) {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+
+    printf("\n--- RELATORIO: VALOR POR PRODUTO ---\n");
+    for (int i = 0; i < total; i++) {
+        float valorTotalProduto = estoque[i].quantDisponivel * estoque[i].valorUnitario;
+        printf("Codigo: %d | Nome: %s | Qtd: %d | Valor Unit.: R$ %.2f | Valor Total: R$ %.2f\n",
+               estoque[i].codigo, estoque[i].nome, estoque[i].quantDisponivel,
+               estoque[i].valorUnitario, valorTotalProduto);
+    }
+    printf("------------------------------------\n");
 }
 
-void relatorioValorTotalEstoque(void) {
-    printf("Funcao relatorioValorTotalEstoque ainda nao implementada.\n");
+void relatorioValorTotalEstoque(struct Produto estoque[], int total) {
+    float totalEstoque = 0.0f;
+    for (int i = 0; i < total; i++) {
+        totalEstoque += estoque[i].quantDisponivel * estoque[i].valorUnitario;
+    }
+
+    printf("\n--- VALOR TOTAL DO ESTOQUE ---\n");
+    printf("Valor Total em Estoque: R$ %.2f\n", totalEstoque);
+    printf("-------------------------------\n");
 }
 
-void relatorioMaiorValorUnitario(void) {
-    printf("Funcao relatorioMaiorValorUnitario ainda nao implementada.\n");
+void relatorioMaiorValorUnitario(struct Produto estoque[], int total) {
+    if (total == 0) {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+
+    float maior = estoque[0].valorUnitario;
+    for (int i = 1; i < total; i++) {
+        if (estoque[i].valorUnitario > maior) {
+            maior = estoque[i].valorUnitario;
+        }
+    }
+
+    printf("\n--- PRODUTO(S) COM MAIOR VALOR UNITARIO (R$ %.2f) ---\n", maior);
+    for (int i = 0; i < total; i++) {
+        if (estoque[i].valorUnitario == maior) {
+            printf("Codigo: %d | Nome: %s | Categoria: %d | Qtd: %d | Valor Unit.: R$ %.2f\n",
+                   estoque[i].codigo, estoque[i].nome, estoque[i].categoria,
+                   estoque[i].quantDisponivel, estoque[i].valorUnitario);
+        }
+    }
+    printf("------------------------------------------------------\n");
 }
 
-void relatorioMaiorValorArmazenado(void) {
-    printf("Funcao relatorioMaiorValorArmazenado ainda nao implementada.\n");
+void relatorioMaiorValorArmazenado(struct Produto estoque[], int total) {
+    if (total == 0) {
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+
+    float maiorValorArmazenado = estoque[0].quantDisponivel * estoque[0].valorUnitario;
+    for (int i = 1; i < total; i++) {
+        float valorArmazenado = estoque[i].quantDisponivel * estoque[i].valorUnitario;
+        if (valorArmazenado > maiorValorArmazenado) {
+            maiorValorArmazenado = valorArmazenado;
+        }
+    }
+
+    printf("\n--- PRODUTO(S) COM MAIOR VALOR ARMAZENADO (R$ %.2f) ---\n", maiorValorArmazenado);
+    for (int i = 0; i < total; i++) {
+        float valorArmazenado = estoque[i].quantDisponivel * estoque[i].valorUnitario;
+        if (valorArmazenado == maiorValorArmazenado) {
+            printf("Codigo: %d | Nome: %s | Qtd: %d | Valor Unit.: R$ %.2f | Valor Total Armazenado: R$ %.2f\n",
+                   estoque[i].codigo, estoque[i].nome, estoque[i].quantDisponivel,
+                   estoque[i].valorUnitario, valorArmazenado);
+        }
+    }
+    printf("--------------------------------------------------------\n");
 }
 
-void relatorioPorCategoria(void) {
-    printf("Funcao relatorioPorCategoria ainda nao implementada.\n");
+void relatorioPorCategoria(struct Produto estoque[], int total) {
+    const char *nomesCategorias[MAX_CATEGORIAS] = {
+        "Material de escritorio",
+        "Material de limpeza",
+        "Equipamentos",
+        "Componentes eletronicos",
+        "Ferramentas",
+        "Acessorios"
+    };
+
+    printf("\n--- RELATORIO POR CATEGORIA ---\n");
+    for (int cat = 1; cat <= MAX_CATEGORIAS; cat++) {
+        int qtdProdutos = 0;
+        int qtdUnidades = 0;
+        float valorTotalCat = 0.0f;
+
+        for (int i = 0; i < total; i++) {
+            if (estoque[i].categoria == cat) {
+                qtdProdutos++;
+                qtdUnidades += estoque[i].quantDisponivel;
+                valorTotalCat += estoque[i].quantDisponivel * estoque[i].valorUnitario;
+            }
+        }
+
+        printf("Categoria %d (%s):\n", cat, nomesCategorias[cat - 1]);
+        printf("  - Qtd. de tipos de produtos: %d\n", qtdProdutos);
+        printf("  - Total de unidades: %d\n", qtdUnidades);
+        printf("  - Valor total acumulado: R$ %.2f\n", valorTotalCat);
+        printf("----------------------------------------\n");
+    }
 }
