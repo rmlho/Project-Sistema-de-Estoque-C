@@ -66,8 +66,8 @@ void ordenarPorQuantidade(struct Produto estoque[], int total);
 void ordenarPorValor(struct Produto estoque[], int total);
 
 //Funções de pesistência de dados:
-void salvarDados(void);
-void carregarDados(void);
+void salvarDados(struct Produto estoque[], int total);
+void carregarDados(struct Produto estoque[], int *total);
 
 //Funções de relatórios do sistema:
 void relatorioGeral(void);
@@ -102,7 +102,7 @@ int main(void) {
     int total = 0;
     int opcao = 0;
 
-    carregarDados();
+    carregarDados(estoque, &total);
 
     while (opcao != 16) {
         exibirMenu();
@@ -162,15 +162,15 @@ int main(void) {
                 break;
 
             case 14:
-                salvarDados();
+                salvarDados(estoque, total);
                 break;
 
             case 15:
-                carregarDados();
+                carregarDados(estoque, &total);
                 break;
 
             case 16:
-                salvarDados();
+                salvarDados(estoque, total);
                 return 0;
 
             default:
@@ -293,7 +293,7 @@ int validarNome(char nome[]) {
 }
 
 int validarCodigo(int codigo) {
-    if (codigo < 1000 && codigo > MAX_CODIGO) {
+    if (codigo < 1000 || codigo > MAX_CODIGO) {
         return 0;
     }
 
@@ -880,12 +880,51 @@ void ordenarPorValor(struct Produto estoque[], int total) {
     }
 }
 
-void carregarDados(void) {
-    printf("Funcao carregarDados ainda nao implementada.\n");
-}
+void carregarDados(struct Produto estoque[], int *total) {
+    FILE *pArquivo = fopen("estoque.txt", "r");
 
-void salvarDados(void) {
-    printf("Funcao salvarDados ainda nao implementada.\n");
+    if (pArquivo == NULL) {
+        printf("Nenhum dado salvo anteriormente. Iniciando vazio.\n");
+        return;
+    }
+
+    *total = 0;
+
+    while (fscanf(pArquivo, "%d;%99[^;];%d;%d;%d;%f;%d\n",
+                   &estoque[*total].codigo,
+                   estoque[*total].nome,
+                   &estoque[*total].categoria,
+                   &estoque[*total].quantDisponivel,
+                   &estoque[*total].quantMinima,
+                   &estoque[*total].valorUnitario,
+                   &estoque[*total].situacao) == 7) {
+        (*total)++;
+    }
+
+    fclose(pArquivo);
+    printf("%d produtos carregados com sucesso.\n", *total);
+}
+void salvarDados(struct Produto estoque[], int total) {
+    FILE *pArquivo = fopen("estoque.txt", "w");
+    int i;
+
+    if (pArquivo == NULL) {
+        printf("Falha ao abrir arquivo!\n");
+        return;
+    }
+
+    for (i = 0; i < total; i++) {
+        fprintf(pArquivo, "%d;%s;%d;%d;%d;%.2f;%d\n",
+                estoque[i].codigo,
+                estoque[i].nome,
+                estoque[i].categoria,
+                estoque[i].quantDisponivel,
+                estoque[i].quantMinima,
+                estoque[i].valorUnitario,
+                estoque[i].situacao);
+    }
+
+    fclose(pArquivo);
 }
 
 void consultarPorNome(struct Produto estoque[], int total) {
